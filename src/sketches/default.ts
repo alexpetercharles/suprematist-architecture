@@ -15,12 +15,24 @@ const defaultSketch = (width: number, height: number) => ((p: p5): void => {
     cam.lookAt(camCenter.x, camCenter.y, camCenter.z);
   };
 
-  const createBox = (boxWidth: number, boxHeight: number, boxDepth: number) => {
+  let mouseInitialY: number;
+  let mouseDeltaY = 0;
+  p.mousePressed = () => { mouseInitialY = p.mouseY; };
+  p.mouseDragged = () => { mouseDeltaY = mouseInitialY - p.mouseY; };
+
+  const drawBuilding = (
+    boxWidth: number,
+    boxHeight: number,
+    boxDepth: number,
+    x: number,
+    y: number,
+  ) => {
     p.push();
+    p.translate(x, y, mouseDeltaY / 2);
     p.stroke(255);
     p.ambientMaterial(0, 0, 0);
-    p.box(boxWidth, boxDepth, boxHeight);
-    p.translate(0, 0, (boxHeight / 2) + 0.1);
+    p.box(boxWidth, boxDepth, boxHeight + mouseDeltaY);
+    p.translate(0, 0, ((boxHeight + mouseDeltaY) / 2) + 0.1);
     p.emissiveMaterial(255, 255, 255);
     p.plane(boxWidth, boxDepth);
     p.pop();
@@ -31,7 +43,7 @@ const defaultSketch = (width: number, height: number) => ((p: p5): void => {
     p.background(0);
     // p.orbitControl();
     p.rotateX(90);
-    createBox(400, boxScale, 200);
+    drawBuilding(400, boxScale, 200, 0, 0);
   };
 });
 
